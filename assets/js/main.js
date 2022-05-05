@@ -6,19 +6,23 @@ $(document).ready(() => {
 
 const hrArr = [];
 new Array(10).fill().forEach((_, i) => {
-  hrArr.push(moment({ hour: `${i + 9}` }).format("H"));
+  hrArr.push(moment({ hour: `${i + 9}` }).format("h A"));
 });
 
 $.each(hrArr, (_, hr) => {
-  const row = $("<div class='row bg-light'></div>");
+  const row = $("<div class='row bg-light d-flex gap'></div>");
   const hourCol = $(
-    "<div class='col-lg-2 bg-primary d-flex justify-content-start align-items-center'>" +
+    "<div class='col-1 bg-light d-flex justify-content-start align-items-center'>" +
       hr +
-      (hr > 12 ? "PM" : "AM") +
       "</div>"
   );
-  const txtAreaCol = $("<div class='col-lg-8 bg-light'></div>");
-  const saveClrCol = $("<div class='col-lg-2 bg-danger'></div>");
+  //input grp copy pasta from bootstrap website components > input-grp > textarea
+  const txtAreaCol = $(
+    "<div class='col-10 bg-light input-group'><textarea class='form-control' aria-label='with textarea'></textarea></div>"
+  );
+  const saveClrCol = $(
+    "<div class='col-1 bg-light d-flex align-items-center justify-content-around pl-0'><i class='fa-solid fa-floppy-disk fa-lg'></i><i class='fa-solid fa-trash-can fa-lg'></i></div>"
+  );
   row.append(hourCol, txtAreaCol, saveClrCol);
   $(".container").append(row);
 });
