@@ -68,3 +68,14 @@ textarea {
   font-size: 20px;
   transition: all 0.3s ease-in-out;
 }
+.fa-floppy-disk,
+.fa-trash-can {
+  cursor: pointer;
+}
+.fa-floppy-disk:hover {
+  color: green;
+}
+
+.fa-trash-can:hover {
+  color: red;
+}
