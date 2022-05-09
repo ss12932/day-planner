@@ -2,13 +2,12 @@
 
 //Global declarations
 const container = $(".container");
-const hrArr = [];
-
+let hrArr = [];
 const hrCntrRender = () => {
   //this generates array with each element 9am-6pm. default moment.js jr at 12am. added 9 to start from 9am
 
   $.each(new Array(10).fill(), (i, _) => {
-    hrArr.push(moment({ hour: `${i + 9}` }).format("h A"));
+    hrArr.push(moment({ hour: `${i + 9}` }).format("HH A"));
   });
 
   const initLS = (hr) => {
@@ -45,22 +44,20 @@ const hrCntrRender = () => {
     initLS(hr);
   });
 };
-
 const clrCntrRender = () => {
   const clrRender = () => {
-    const currentHr = moment().format("h A");
+    const currentHr = parseInt(moment().format("HH A"));
     $.each(hrArr, (i, hr) => {
-      // console.log(hr);
-      if (moment(hr).format("h A").isSame(currentHr)) {
+      let parsedHr = parseInt(hr);
+      if (parsedHr === currentHr) {
         $("textarea[data-hr='" + hr + "']").addClass("present");
-      } else if (moment(hr).isBefore(currentHr)) {
+      } else if (parsedHr < currentHr) {
         $("textarea[data-hr='" + hr + "']").addClass("past");
-      } else {
+      } else if (parsedHr > currentHr) {
         $("textarea[data-hr='" + hr + "']").addClass("future");
       }
     });
   };
-
   setInterval(clrRender, 1000);
 };
 
