@@ -50,8 +50,13 @@ const clrCntrRender = () => {
   const clrRender = () => {
     const currentHr = moment().format("h A");
     $.each(hrArr, (i, hr) => {
-      if (hr === currentHr) {
+      // console.log(hr);
+      if (moment(hr).format("h A").isSame(currentHr)) {
         $("textarea[data-hr='" + hr + "']").addClass("present");
+      } else if (moment(hr).isBefore(currentHr)) {
+        $("textarea[data-hr='" + hr + "']").addClass("past");
+      } else {
+        $("textarea[data-hr='" + hr + "']").addClass("future");
       }
     });
   };
