@@ -10,7 +10,7 @@ https://ss12932.github.io/day-planner/
 
 ## Github Repository Link
 
-https://github.com/ss12932/js-code-quiz
+https://github.com/ss12932/day-planner
 
 ## Application Screenshot
 
