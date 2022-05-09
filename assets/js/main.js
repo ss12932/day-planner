@@ -10,6 +10,14 @@ const hrCntrRender = () => {
     hrArr.push(moment({ hour: `${i + 9}` }).format("h A"));
   });
 
+  const initLS = (hr) => {
+    const getHrData = JSON.parse(localStorage.getItem(hr));
+    if (!getHrData) {
+      localStorage.setItem(hr, JSON.stringify([]));
+    }
+    $("textarea[data-hr='" + hr + "']").val(getHrData);
+  };
+
   //loop over the above array, and generate the container, whilst
   const containerRender = $.each(hrArr, (_, hr) => {
     const row = $(
@@ -21,31 +29,42 @@ const hrCntrRender = () => {
         "</div>"
     );
     const txtAreaCol = $(
-      "<div class='col-10 bg-light input-group'><textarea class='form-control' aria-label='with textarea'></textarea></div>"
+      "<div class='col-10 bg-light input-group'><textarea data-hr='" +
+        hr +
+        "' class='form-control' aria-label='with textarea'></textarea></div>"
     );
 
     const saveClrCol = $(
       "<div class='col-1 bg-light d-flex align-items-center justify-content-around pl-0'><i class='fa-solid fa-floppy-disk fa-lg '></i><i id='reset-btn' class='fa-solid fa-trash-can fa-lg'></i></div>"
     );
+
     row.append(hourCol, txtAreaCol, saveClrCol);
     $(".container").append(row);
+    initLS(hr);
   });
 };
 
-const initLoadLS = () => {
-  const txtDatafromLS = JSON.parse(localStorage.getItem("workDayData"));
-
-  if (!txtDatafromLS) {
-    localStorage.setItem("workDayData", JSON.stringify([]));
-  }
+const storeInLS = (key, value) => {
+  let arrFromLS = JSON.parse(localStorage.getItem(key));
+  //clear array from LS first before saving textarea text, otherwise will retain previous text on load.
+  arrFromLS = [];
+  arrFromLS.push(value);
+  localStorage.setItem(key, JSON.stringify(arrFromLS));
 };
 
 const saveBtnClick = (e) => {
   if ($(e.target).is(".fa-floppy-disk")) {
-    const hour = $(e.target).closest("div.row").attr("data-hr");
-    const textData = $(e.target).parent().sibling();
-    console.log(hour);
-    $();
+    const hour = $(e.target).closest("div.row").data("hr");
+    const textData = $(e.target).parent().prev().children().val();
+    if (textData) storeInLS(hour, textData);
+  }
+};
+
+const resetBtnClick = (e) => {
+  if ($(e.target).is(".fa-trash-can")) {
+    const hour = $(e.target).closest("div.row").data("hr");
+    let textData = $("textarea[data-hr='" + hour + "']").val("");
+    localStorage.removeItem(hour);
   }
 };
 
@@ -58,9 +77,6 @@ const headerTimerRender = () => {
 };
 
 const initPageLoad = () => {
-  //initialise day planner data
-  initLoadLS();
-
   //render timer on jumbotron header.
   headerTimerRender();
 
@@ -70,3 +86,4 @@ const initPageLoad = () => {
 
 $(document).ready(initPageLoad);
 container.on("click", saveBtnClick);
+container.on("click", resetBtnClick);
