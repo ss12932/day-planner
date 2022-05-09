@@ -6,7 +6,7 @@ const container = $(".container");
 const hrCntrRender = () => {
   //this generates array with each element 9am-6pm. default moment.js jr at 12am. added 9 to start from 9am
   const hrArr = [];
-  new Array(10).fill().forEach((_, i) => {
+  $.each(new Array(10).fill(), (i, _) => {
     hrArr.push(moment({ hour: `${i + 9}` }).format("h A"));
   });
 
@@ -32,6 +32,14 @@ const hrCntrRender = () => {
   });
 };
 
+const initLoadLS = () => {
+  const txtDatafromLS = JSON.parse(localStorage.getItem("workDayData"));
+
+  if (!txtDatafromLS) {
+    localStorage.setItem("workDayData", JSON.stringify([]));
+  }
+};
+
 const saveBtnClick = (e) => {
   if ($(e.target).is(".fa-floppy-disk")) {
     const hour = $(e.target).closest("div.row").attr("data-hr");
@@ -51,7 +59,7 @@ const headerTimerRender = () => {
 
 const initPageLoad = () => {
   //initialise day planner data
-  // initLoadLS();
+  initLoadLS();
 
   //render timer on jumbotron header.
   headerTimerRender();
