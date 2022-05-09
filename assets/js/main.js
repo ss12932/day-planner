@@ -2,10 +2,11 @@
 
 //Global declarations
 const container = $(".container");
+const hrArr = [];
 
 const hrCntrRender = () => {
   //this generates array with each element 9am-6pm. default moment.js jr at 12am. added 9 to start from 9am
-  const hrArr = [];
+
   $.each(new Array(10).fill(), (i, _) => {
     hrArr.push(moment({ hour: `${i + 9}` }).format("h A"));
   });
@@ -40,13 +41,27 @@ const hrCntrRender = () => {
 
     row.append(hourCol, txtAreaCol, saveClrCol);
     $(".container").append(row);
+    //will load all data from local storage upon load
     initLS(hr);
   });
 };
 
+const clrCntrRender = () => {
+  const clrRender = () => {
+    const currentHr = moment().format("h A");
+    $.each(hrArr, (i, hr) => {
+      if (hr === currentHr) {
+        $("textarea[data-hr='" + hr + "']").addClass("present");
+      }
+    });
+  };
+
+  setInterval(clrRender, 1000);
+};
+
 const storeInLS = (key, value) => {
   let arrFromLS = JSON.parse(localStorage.getItem(key));
-  //clear array from LS first before saving textarea text, otherwise will retain previous text on load.
+  //clear array content from LS first before saving textarea text, otherwise will retain previous text on load.
   arrFromLS = [];
   arrFromLS.push(value);
   localStorage.setItem(key, JSON.stringify(arrFromLS));
@@ -55,8 +70,8 @@ const storeInLS = (key, value) => {
 const saveBtnClick = (e) => {
   if ($(e.target).is(".fa-floppy-disk")) {
     const hour = $(e.target).closest("div.row").data("hr");
-    const textData = $(e.target).parent().prev().children().val();
-    if (textData) storeInLS(hour, textData);
+    const textData = $("textarea[data-hr='" + hour + "']").val();
+    storeInLS(hour, textData);
   }
 };
 
@@ -82,6 +97,8 @@ const initPageLoad = () => {
 
   //render hour row containers from 9am-6pm
   hrCntrRender();
+
+  clrCntrRender();
 };
 
 $(document).ready(initPageLoad);
